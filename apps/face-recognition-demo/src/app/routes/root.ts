@@ -30,8 +30,6 @@ async function getEmbedding(imgBase64: string, imgExt: string) {
     }
 
     const responseData = await response.json();
-    console.log(responseData.results[0].embedding);
-
     if (responseData.results.length === 0) return [];
 
     // Extract the "embedding" key from the response
@@ -47,6 +45,36 @@ export default async function (fastify: FastifyInstance) {
   fastify.get('/', async function () {
     return { message: `Hello ${+new Date()}` };
   });
+
+  fastify.post(
+    '/register',
+    async function (req: FastifyRequest, res: FastifyReply) {
+      const data = await req.file();
+
+      const name = (data.fields.name as any).value as string;
+      if (name === undefined)
+        return res.status(422).send({ message: 'name must be defined' });
+
+      const fileExt = data.filename.split('.')[1];
+      const dataBuffer = await data.toBuffer();
+      const dataBase64 = dataBuffer.toString('base64');
+
+      const dataEmbedding = await getEmbedding(dataBase64, fileExt);
+      if (dataEmbedding.length === 0) return res.status(204).send(null);
+
+      const fmtDataEmbedding = `'[${dataEmbedding.join(',')}]'`;
+      const face = await db
+        .insertInto('faces')
+        .values({
+          name,
+          vector: sql.raw(fmtDataEmbedding),
+        })
+        .returning(['id', 'name', 'created_at', 'updated_at'])
+        .executeTakeFirst();
+
+      return res.status(201).send(face);
+    }
+  );
 
   fastify.post(
     '/recognize',
