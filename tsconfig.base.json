@@ -14,7 +14,16 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@face-recognition-demo/shared/database": [
+        "libs/shared/database/index.ts"
+      ],
+      "@face-recognition-demo/shared/config": ["libs/shared/config/index.ts"],
+      "@face-recognition-demo/shared/utils": ["libs/shared/utils/src/index.ts"],
+      "@face-recognition-demo/shared/entities": [
+        "libs/shared/entities/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

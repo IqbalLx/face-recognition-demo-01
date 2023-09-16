@@ -2,7 +2,9 @@
   "name": "@face-recognition-demo/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "migrate": "nx build migrator && pnpm env-cmd -f .env.local node dist/apps/migrator/main.js"
+  },
   "private": true,
   "dependencies": {
     "@fastify/autoload": "~5.7.1",
@@ -10,6 +12,8 @@
     "axios": "^1.0.0",
     "fastify": "~4.13.0",
     "fastify-plugin": "~4.5.0",
+    "kysely": "^0.26.1",
+    "pg": "8.10.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
@@ -19,11 +23,14 @@
     "@nx/js": "16.6.0",
     "@nx/linter": "16.6.0",
     "@nx/node": "16.6.0",
+    "@nx/webpack": "^16.6.0",
     "@nx/workspace": "16.6.0",
     "@types/jest": "^29.4.0",
     "@types/node": "~18.7.1",
+    "@types/pg": "^8.10.2",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
+    "env-cmd": "^10.1.0",
     "esbuild": "^0.17.17",
     "eslint": "~8.15.0",
     "eslint-config-prettier": "8.1.0",
