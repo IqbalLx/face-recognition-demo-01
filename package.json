@@ -8,6 +8,7 @@
   "private": true,
   "dependencies": {
     "@fastify/autoload": "~5.7.1",
+    "@fastify/multipart": "^7.7.3",
     "@fastify/sensible": "~5.2.0",
     "axios": "^1.0.0",
     "fastify": "~4.13.0",
