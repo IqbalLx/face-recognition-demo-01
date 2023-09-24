@@ -83,15 +83,40 @@ export async function seed() {
   return;
 }
 
+export async function extractEmbedding() {
+  const faces = await db
+    .selectFrom('faces')
+    .select(['name', 'vector'])
+    .execute();
+
+  const tsvVectors = faces
+    .map((face) => {
+      const vectorStr = face.vector;
+      const vectorArr = vectorStr.replace('[', '').replace(']', '').split(',');
+
+      const tsvFormattedVector = vectorArr.join('\t');
+
+      return tsvFormattedVector;
+    })
+    .join('\n');
+
+  const tsvMetadatas = faces.map((face) => face.name).join('\n');
+
+  await fs.writeFile('./tmp/face_vector.tsv', tsvVectors);
+  await fs.writeFile('./tmp/face_vector_meta.tsv', tsvMetadatas);
+
+  return;
+}
+
 async function main() {
   const args = process.argv.splice(2);
   switch (args[0]) {
     case 'latest':
-      migrateToLatest();
+      await migrateToLatest();
       break;
 
     case 'rollback':
-      rollbackAll();
+      await rollbackAll();
       break;
 
     case 'refresh':
@@ -102,6 +127,10 @@ async function main() {
 
     case 'seed':
       await seed();
+      break;
+
+    case 'extractEmbedding':
+      await extractEmbedding();
       break;
 
     default:
